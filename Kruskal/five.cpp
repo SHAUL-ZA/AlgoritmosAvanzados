@@ -70,10 +70,12 @@ int main() {
         inputFile >> edges[i][0] >> edges[i][1] >> edges[i][2];
     }
     //se llena el vector edges con los valores de cada edge
-    std::vector<std::vector<int> > MST = KA(edges, n);//se crea el vector MST y se le asigna el valor de la función KA
+     std::vector<std::vector<int> > MST = KA(edges, n);//se crea el vector MST y se le asigna el valor de la función KA
     for (std::vector<int>& edge : MST) {
         std::cout << edge[0] << " - " << edge[1] << " : " << edge[2] << std::endl;
+        w+=edge[2];
     }
+    std::cout<<"El peso total del MST es: "<<w<<std::endl;
     //se imprime el MST
     inputFile.close();
 
