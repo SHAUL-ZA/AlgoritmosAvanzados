@@ -56,7 +56,7 @@ std::vector<std::vector<int> > KA(std::vector<std::vector<int> >& edges, int n) 
 }//KA
 
 int main() {
-    std::ifstream inputFile("data.txt");//se abre el archivo
+    std::ifstream inputFile("data5.txt");//se abre el archivo
     if (!inputFile.is_open()) {
         std::cerr << "Failed to open input file." << std::endl;
         return 1;
@@ -64,6 +64,7 @@ int main() {
 
     int n, m;//se crean las variables n y m
     inputFile >> n >> m;//se leen los valores de n y m del archivo
+
     int w=0;
     std::vector<std::vector<int> > edges(m, std::vector<int>(3));//se crea el vector edges con tamaño m, siendo m el número de aristas/edges
     for (int i = 0; i < m; ++i) {
