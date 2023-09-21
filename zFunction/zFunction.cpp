@@ -44,9 +44,7 @@ int main() {
     std::vector<int> vector_test = zFunction(pattern_test);
 
     for (int i = 0; i < pattern_test.length(); i++) {
-        std::cout << "Position " << i << ": ";
-        std::cout << "Pattern Value = " << pattern_test[i] << ", ";
-        std::cout << "Z-Value = " << vector_test[i] << std::endl;
+        std::cout << vector_test[i] << "" ;
     }
 
     return 0;
