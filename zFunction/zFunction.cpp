@@ -1,8 +1,10 @@
 // Z function
-
+//Sylvia Fernanda Colomo Fuente - A01781983
+//Shaul Zayat Askenazi - A01783240
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 std::vector <int> zFunction(std::string pattern){
     int patternLength = pattern.length();
@@ -40,12 +42,17 @@ std::vector <int> zFunction(std::string pattern){
 
 
 int main() {
-    std::string pattern_test = "ABCABC$XABCABXABCABCX";
+    std::string pattern_test = "ABABD$ABABCABCABABABD";
+    //ABCABC$XABCABXABCABCX
+    //ABABD$ABABCABCABABABD
     std::vector<int> vector_test = zFunction(pattern_test);
 
     for (int i = 0; i < pattern_test.length(); i++) {
         std::cout << vector_test[i] << "" ;
-    }
 
+    }
+   //obtiene el valor del elemento maximo del vector ya que es donde haya el mayor número de coincidencias con el patrón por lo que indica el inicio del patrón
+    std::cout << std::endl << "El patron empieza en la posicion: " ;
+    std::cout  << std::distance(vector_test.begin(), std::max_element(vector_test.begin(), vector_test.end())) << std::endl;
     return 0;
 }
