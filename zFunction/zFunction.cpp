@@ -2,6 +2,7 @@
 //Sylvia Fernanda Colomo Fuente - A01781983
 //Shaul Zayat Askenazi - A01783240
 //Juan Pablo Moreno Robles Arenas - A01374091
+//Domingo Mora - A01783317
 #include <iostream>
 #include <string>
 #include <vector>
