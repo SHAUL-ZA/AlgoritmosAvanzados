@@ -1,4 +1,7 @@
 //Nombres y matriculas:
+/*Sylvia Fernanda Colomo Fuente -A01781983*/
+/*Shaul Zayat Askenazi - A01783240*/
+
 
 #include <iostream>
 #include <string>
@@ -102,52 +105,69 @@ std::vector<int> kmp(std::string text, std::string pattern)
 
 //Palindrome -----------------------------------------------------------
 //Function to find the longest palindrome in a string
-std::string longestPalindrome(std::string text)
-{
-    int text_length = text.length();
-    int max_length = 1;
-    int start_index = 0;
-    int low, high;
-    std::string palindrome = "";
+std::string ProcesarStr(const std::string& k) {
+    std::string modStr = "$"; //Se inicializa con un delimitador 
+    for (char c : k) {
+        modStr += c;
+        modStr += "$";
+    }
+    return modStr;
+}
 
-    //One by one consider every character as center point of even and odd length palindromes
-    for (int i = 1; i < text_length; i++)
-    {
-        //Find the longest even length palindrome with center points as i-1 and i.
-        low = i - 1;
-        high = i;
-        while (low >= 0 && high < text_length && text[low] == text[high])
-        {
-            if (high - low + 1 > max_length)
-            {
-                start_index = low;
-                max_length = high - low + 1;
-            }
-            low--;
-            high++;
+// Función que encuentra los valores de longitud de palíndromos en la cadena utilizando el algoritmo de Manacher.
+std::vector<int> EncontrarLongitudes(const std::string& modStr) {
+    int n = modStr.length(); // Longitud de la cadena modificada
+    std::vector<int> L(n);
+    int C = 0; // Centro del palíndromo actual
+    int R = 0; // Borde derecho del palíndromo actual
+
+    for (int i = 0; i < n; i++) { 
+        int mirr = 2 * C - i; // Espejo de i alrededor de C con el fin de evitar comparaciones innecesarias
+
+        if (i < R) { //Si i es menor que el borde derecho del palíndromo
+            L[i] = std::min(R - i, L[mirr]); //Encuentra el mínimo entre el borde derecho del palíndromo y el espejo de i
         }
 
-        //Find the longest odd length palindrome with center point as i
-        low = i - 1;
-        high = i + 1;
-        while (low >= 0 && high < text_length && text[low] == text[high])
-        {
-            if (high - low + 1 > max_length)
-            {
-                start_index = low;
-                max_length = high - low + 1;
-            }
-            low--;
-            high++;
+        // Extender el palíndromo alrededor del centro
+        while (modStr[i + 1 + L[i]] == modStr[i - 1 - L[i]] && i + 1 + L[i] < n && i - 1 - L[i] >= 0) {
+            L[i]++;
+        } /* Mientras que el caracter de la derecha es igual al de la izquierda y el palíndromo
+         no se extienda más allá de los bordes de la cadena */
+
+
+        // Si el palíndromo actual se extiende más allá del borde derecho del otro, actualiza el centro y el borde derecho
+        if (i + L[i] > R) {
+            C = i;
+            R = i + L[i];
         }
     }
 
-    //Return the longest palindrome
-    for (int i = start_index; i <= start_index + max_length - 1; i++)
-    {
-        palindrome += text[i];
+    return L; 
+}
+
+// Función que encuentra el palíndromo más largo en la cadena original a partir de los valores de longitud.
+std::string PalindromoMayor(const std::string& k) {
+    std::string modStr = ProcesarStr(k); //Obtieene la cadena con los delimitadores
+    std::vector<int> L = EncontrarLongitudes(modStr); //Obtiene el vector con las longitudes de los palindromos
+
+    // Encontrar la longitud y la posición del palíndromo más largo
+    int maxLength = 0;
+    int maxPosition = 0;
+
+    for (int i = 0; i < modStr.length(); i++) {
+        if (L[i] > maxLength) {
+            maxLength = L[i]; 
+            maxPosition = i; 
+        }
     }
-    return palindrome;
+
+    // Calcular la posición inicial en la cadena original
+    int start = (maxPosition - maxLength) / 2; //Se divide entre 2 porque se agregaron delimitadores
+
+    // Extraer el palíndromo más largo de la cadena original
+    std::string palindromo = k.substr(start, maxLength); //Desde la posición inicial hasta la longitud del palíndromo
+
+    return palindromo;
 }
 //Palindrome -----------------------------------------------------------
 
@@ -205,10 +225,10 @@ int main()
     //encontrar el palindromo mas largo
     std::cout<<std::endl;
     std::cout<<"Longest palindrome in Transmission 1: " <<std::endl;
-    std::cout << longestPalindrome(T1) << std::endl;
+    std::cout << PalindromoMayor(T1) << std::endl;
     std::cout<<std::endl;
     std::cout<<"Longest palindrome in Transmission 2: " <<std::endl;
-    std::cout << longestPalindrome(T2) << std::endl;
+    std::cout << PalindromoMayor(T2) << std::endl;
     // ------------------------------------------------------------------
 
     //Parte 3: ---------------------------------------------------------
