@@ -153,6 +153,27 @@ std::string longestPalindrome(std::string text)
 
 //Substring ------------------------------------------------------------
 
+std::string Substr(const std::string& str1, const std::string& str2) {
+    std::string longestCoincidence; // Store the longest coincidence
+
+    for (int i = 0; i < str1.length(); i++) {
+        for (int j = 0; j < str2.length(); j++) {
+            int k = 0;
+            // Compare characters from both strings
+            while (i + k < str1.length() && j + k < str2.length() &&
+                   str1[i + k] == str2[j + k]) {
+                k++;
+            }
+            // If a longer coincidence is found, update longestCoincidence
+            if (k > longestCoincidence.length()) {
+                longestCoincidence = str1.substr(i, k);
+            }
+        }
+    }
+    std::cout << longestCoincidence << std::endl;
+
+    return longestCoincidence;
+}
 //main function
 int main()
 {   //lectura de archivos
@@ -194,6 +215,7 @@ int main()
     //substring más largo dentro de T1 que este en T2
     std::cout<<std::endl;
     std::cout<<"Longest substring in Transmission 1 that is in Transmission 2: " <<std::endl;
+    Substr(T1, T2);
     //---------------------------------------------------------------
     return 0;
 }
