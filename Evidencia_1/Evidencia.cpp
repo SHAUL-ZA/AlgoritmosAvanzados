@@ -2,6 +2,7 @@
 /*Sylvia Fernanda Colomo Fuente -A01781983*/
 /*Shaul Zayat Askenazi - A01783240*/
 /*Juan Pablo Moreno Robles Arenas - A01374091*/
+/*Domingo Mora*/
 
 
 #include <iostream>
@@ -27,21 +28,21 @@ std::vector<int> prefixFunction(std::string pattern)
 
     prefixVector[0] = 0;
 
-    while (i < pattern_length)
+    while (i < pattern_length)//cuando i es menor a la longitud del patron
     {
 
-        if (pattern[i] == pattern[j])
+        if (pattern[i] == pattern[j])//si el patron en la posicion i es igual al patron en la posicion j
         {
-            prefixVector[i] = j + 1;
+            prefixVector[i] = j + 1;//el vector en la posicion i es igual a j+1
+            //avanzamos 
             j++;
             i++;
         }
-
         else
         {
-            if (j == 0)
+            if (j == 0)//si j es igual a 0 quiere decir que no hay coincidencia entre el patron y el texto
             {
-                prefixVector[i] = 0;
+                prefixVector[i] = 0;//se le da el valor de 0 y i aumenta
                 i++;
             }
             else
@@ -55,7 +56,7 @@ std::vector<int> prefixFunction(std::string pattern)
 }
 
 
-//Function to find the pattern in the text using the prefix function
+//kmp con ayuda de la funcion prefixFunction para hallar coincidencias
 std::vector<int> kmp(std::string text, std::string pattern)
 {
     int text_length = text.length();
@@ -173,7 +174,7 @@ std::string PalindromoMayor(const std::string& k) {
 //Palindrome -----------------------------------------------------------
 
 //Substring ------------------------------------------------------------
-
+//Se van a tener dos strings para comparar correspondientes al contenido de las transmissiones
 std::string Substr(const std::string& str1, const std::string& str2) {
     std::string subcadena; // Subcadena más larga
 
@@ -186,20 +187,21 @@ std::string Substr(const std::string& str1, const std::string& str2) {
     }
     
     for (int i = 0; i < sub1; i++) {
-        for (int j = 0; j < sub2; j++) {
+        for (int j = 0; j < sub2; j++) { //recorrer ambos strings y comparar
             int long_actual = 0;
             // Compara los caracteres de las cadenas mientras sean iguales
-            while (i + long_actual < sub1 && j + long_actual < sub2 &&
-                   str1[i + long_actual] == str2[j + long_actual]) {
+            while (i + long_actual < sub1 && j + long_actual < sub2 && str1[i + long_actual] == str2[j + long_actual]) 
+            //mientras no sea mayor a las cadenas y los caracteres sean iguales
+            {
                 long_actual++;
             }
             // Si la coincidencia es más larga que la anterior, se actualiza
             if (long_actual > subcadena.length()) {
-                subcadena = str1.substr(i, long_actual);
+                subcadena = str1.substr(i, long_actual);//obtiene la subcadena de strings dado el inicio i y hasta dónde hubo coincidencias long_actual
             }
         }
     }
-    std::cout << subcadena << std::endl;
+    std::cout << subcadena << std::endl;//lo imprime
 
     return subcadena;
 }
