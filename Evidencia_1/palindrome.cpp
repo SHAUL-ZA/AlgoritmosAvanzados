@@ -1,108 +1,98 @@
+/*Shaul Zayat Askenazi - A01783240*/
+
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
 
-std::string editarString(const std::string& inputString) {
-    std::string modifiedString = "$"; 
+// Función que agrega delimitadores "$" a la cadena original para manejar palíndromos de longitud par e impar.
+std::string ProcesarStr(const std::string& k) {
+    std::string modStr = "$"; //Se inicializa con un delimitador 
+    for (char c : k) {
+        modStr += c;
+        modStr += "$";
+    }
+    return modStr;
+}
 
-    for (size_t i = 0; i < inputString.length(); i++) {
-        modifiedString += inputString[i];
-        if (i < inputString.length() - 1) {
-            modifiedString += '$';
+// Función que encuentra los valores de longitud de palíndromos en la cadena utilizando el algoritmo de Manacher.
+std::vector<int> EncontrarLongitudes(const std::string& modStr) {
+    int n = modStr.length(); // Longitud de la cadena modificada
+    std::vector<int> L(n);
+    int C = 0; // Centro del palíndromo actual
+    int R = 0; // Borde derecho del palíndromo actual
+
+    for (int i = 0; i < n; i++) { 
+        int mirr = 2 * C - i; // Espejo de i alrededor de C con el fin de evitar comparaciones innecesarias
+
+        if (i < R) { //Si i es menor que el borde derecho del palíndromo
+            L[i] = std::min(R - i, L[mirr]); //Encuentra el mínimo entre el borde derecho del palíndromo y el espejo de i
+        }
+
+        // Extender el palíndromo alrededor del centro
+        while (modStr[i + 1 + L[i]] == modStr[i - 1 - L[i]] && i + 1 + L[i] < n && i - 1 - L[i] >= 0) {
+            L[i]++;
+        } /* Mientras que el caracter de la derecha es igual al de la izquierda y el palíndromo
+         no se extienda más allá de los bordes de la cadena */
+
+
+        // Si el palíndromo actual se extiende más allá del borde derecho del otro, actualiza el centro y el borde derecho
+        if (i + L[i] > R) {
+            C = i;
+            R = i + L[i];
         }
     }
 
-    modifiedString += '$'; 
-
-    return modifiedString;
+    return L; 
 }
 
+// Función que encuentra el palíndromo más largo en la cadena original a partir de los valores de longitud.
+std::string PalindromoMayor(const std::string& k) {
+    std::string modStr = ProcesarStr(k); //Obtieene la cadena con los delimitadores
+    std::vector<int> L = EncontrarLongitudes(modStr); //Obtiene el vector con las longitudes de los palindromos
 
-std::vector<int> findPalindrome(const std::string& k) {
-    std::vector<int> L(k.length());
-    L[0] = 0;
-    L[1] = 1;
-    int j = 0;
-
-    for (int i = 2; i < k.length(); i++) {
-        while (i + 1 + j < k.length() && k[i + 1 + j] == k[i - 1 - j]) {
-            j++;
-        }
-        L[i] = j;
-        j = 0;
-    }
-
-    return L;
-}
-
-std::string Palindrome(const std::string& k, const std::vector<int>& L) {
-  
-  //funcion que obtiene en string el palindromo más largo usando L
-    
-     int maxLength = 0;
+    // Encontrar la longitud y la posición del palíndromo más largo
+    int maxLength = 0;
     int maxPosition = 0;
 
-    for (int i = 0; i < L.size(); i++) {
+    for (int i = 0; i < modStr.length(); i++) {
         if (L[i] > maxLength) {
-            maxLength = L[i];
-            maxPosition = i;
+            maxLength = L[i]; 
+            maxPosition = i; 
         }
-    }
-    if (maxLength>=maxPosition)
-    {
-        // Calculate the start and end positions of the longest palindrome in the original string
-        int start = (maxPosition - maxLength) / 2;
-        int end = start + maxLength;
-         // Extract the longest palindromic substring from the original string 
-        return k.substr(start, maxLength);
-    }
-    else{
-        std::string p="";
-        int i=0;
-        int j=maxPosition-1;
-        while (i<maxLength)//derecha
-        {
-            p+=k[j];
-            i++;
-            j--;
-        }
-         i=0;
-         j=maxPosition;
-        while(i<maxPosition){//izquierda
-            p+=k[j+1];
-            i++;
-            j--;
-        }
-        //remove the $ from the string
-        p.erase(std::remove(p.begin(), p.end(), '$'), p.end());
-        return p;
     }
 
+    // Calcular la posición inicial en la cadena original
+    int start = (maxPosition - maxLength) / 2; //Se divide entre 2 porque se agregaron delimitadores
 
+    // Extraer el palíndromo más largo de la cadena original
+    std::string palindromo = k.substr(start, maxLength); //Desde la posición inicial hasta la longitud del palíndromo
+
+    return palindromo;
 }
-
-
 
 
 int main() {
-    //std::string input = "CACBCAC";
-    std::string input = "ABBA";
-    //std::string input ="XCBCC";
-    //std::string input="XABCABXBBC";
-    std::string result = editarString(input);
-    std::cout << result << std::endl; 
-    //print the result for findPalindrome
-    std::vector<int> result2 = findPalindrome(result);
-    for (int i = 0; i < result2.size(); i++) {
-        std::cout << result2[i] << " ";
+    //Espacio en consola
+    std::cout << std::endl; 
+
+    //Cadena de prueba
+    std::string input = "ABBCEJFRCRABBBAFRFG";
+
+    //Develve la cadena con los delimitadores
+    std::string result = ProcesarStr(input);
+    std::cout <<"Cadena: "<< result << std::endl;
+
+    //Devuelve el vector con las longitudes de los palindromos
+    std::vector<int> L = EncontrarLongitudes(result);
+    std::cout << "Longitudes: ";
+    for (int i = 0; i < L.size(); i++) {
+        std::cout << L[i] << " ";
     }
-    std::cout << std::endl;
-    //print the result for editarString
-    std::string result3 = Palindrome(result, result2);
-    std::cout << result3 << std::endl;
+    std::cout << std::endl; 
 
-    return 0;
+    //Devuelve el palindromo mas largo
+    std::string palindromo = PalindromoMayor(input);
+    std::cout << "Palindromo mas largo: " << palindromo << std::endl;
+
+    return 0; 
 }
-
-
