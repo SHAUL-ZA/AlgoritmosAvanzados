@@ -1,6 +1,7 @@
 //Nombres y matriculas:
 /*Sylvia Fernanda Colomo Fuente -A01781983*/
 /*Shaul Zayat Askenazi - A01783240*/
+/*Juan Pablo Moreno Robles Arenas - A01374091*/
 
 
 #include <iostream>
@@ -174,25 +175,33 @@ std::string PalindromoMayor(const std::string& k) {
 //Substring ------------------------------------------------------------
 
 std::string Substr(const std::string& str1, const std::string& str2) {
-    std::string longestCoincidence; // Store the longest coincidence
+    std::string subcadena; // Subcadena más larga
 
-    for (int i = 0; i < str1.length(); i++) {
-        for (int j = 0; j < str2.length(); j++) {
-            int k = 0;
-            // Compare characters from both strings
-            while (i + k < str1.length() && j + k < str2.length() &&
-                   str1[i + k] == str2[j + k]) {
-                k++;
+    int sub1 = str1.length(); // Longitud de la primera cadena
+    int sub2 = str2.length(); // Longitud de la segunda cadena
+
+    // Si alguna de las cadenas está vacía, no hay coincidencia
+    if (sub1 == 0 || sub2 == 0) {
+        return "";
+    }
+    
+    for (int i = 0; i < sub1; i++) {
+        for (int j = 0; j < sub2; j++) {
+            int long_actual = 0;
+            // Compara los caracteres de las cadenas mientras sean iguales
+            while (i + long_actual < sub1 && j + long_actual < sub2 &&
+                   str1[i + long_actual] == str2[j + long_actual]) {
+                long_actual++;
             }
-            // If a longer coincidence is found, update longestCoincidence
-            if (k > longestCoincidence.length()) {
-                longestCoincidence = str1.substr(i, k);
+            // Si la coincidencia es más larga que la anterior, se actualiza
+            if (long_actual > subcadena.length()) {
+                subcadena = str1.substr(i, long_actual);
             }
         }
     }
-    std::cout << longestCoincidence << std::endl;
+    std::cout << subcadena << std::endl;
 
-    return longestCoincidence;
+    return subcadena;
 }
 //main function
 int main()
