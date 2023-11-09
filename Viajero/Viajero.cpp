@@ -1,5 +1,5 @@
-/*Sylvia Fernanda Colomo Fuente - A01781983*/
-/**/
+/*Sylvia Fernanda Colomo Fuente | A01781983*/
+/*Shaul Zayat Askenazi | A01783240*/
 /**/
 /**/
 #include <iostream>
@@ -107,10 +107,12 @@ int Viajero(std::vector<std::vector<int> > matrix, std::vector<std::string> Mapa
     totalCost += matrix[pos_actual][source]; //costo del último pueblo visitado al source 
 
     //Imprimir el camino:
-    std::cout << "Camino óptimo:" << std::endl;
     for (int i = 0; i < camino.size(); i++) {
         int k = camino[i];//se guarda el pueblo en la posicion i del camino
-        std::cout << Mapa[k] << "-";
+        std::cout << Mapa[k];
+        if (i != camino.size() - 1) {
+            std::cout << "-";
+        }
     }
     std::cout << std::endl;
     // Imprime el costo final
@@ -126,12 +128,12 @@ int main() {
     matrix = read_file(file_name, Mapa);
 
     // Print the matrix
-    for (const std::vector<int>& row : matrix) {
-        for (int value : row) {
-            std::cout << value << ' ';
-        }
-        std::cout << std::endl;
-    }
+    // for (const std::vector<int>& row : matrix) {
+    //     for (int value : row) {
+    //         std::cout << value << ' ';
+    //     }
+    //     std::cout << std::endl;
+    // }
 
     // Print the city names
     //std::cout << "City Names:" << std::endl;
