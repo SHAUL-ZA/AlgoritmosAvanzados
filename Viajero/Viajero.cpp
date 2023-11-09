@@ -1,3 +1,7 @@
+/*Sylvia Fernanda Colomo Fuente - A01781983*/
+/**/
+/**/
+/**/
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -110,7 +114,7 @@ int Viajero(std::vector<std::vector<int> > matrix, std::vector<std::string> Mapa
     }
     std::cout << std::endl;
     // Imprime el costo final
-    std::cout << "Costo final: " << totalCost << std::endl;
+    std::cout << "Costo final: ";
     return totalCost;
 }
 
