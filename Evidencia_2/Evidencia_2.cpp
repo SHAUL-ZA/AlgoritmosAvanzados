@@ -14,10 +14,16 @@
 
 
 // Lee el archivo de texto y lo convierte en una matriz de adyacencia
-    std::vector<std::vector<int> > read_file(std::string file_name, std::vector<std::string>& Mapa) {
+    std::vector<std::vector<int> > read_file(std::string file_name, std::vector<std::string>& Mapa ,int &n) {
     std::ifstream file(file_name);
     std::string line;
     std::vector<std::vector<int> > matrix;
+
+     // Read the first line to get the number of nodes
+    if (std::getline(file, line)) {
+        std::istringstream iss(line);
+        iss >> n;
+    }
 
     while (std::getline(file, line)) {
         if (line.empty()) {
@@ -44,7 +50,69 @@
     return matrix;
 }
 //PARTE 1 KRUSKAL --------------------------------------------------
+bool Edges_Bool(const std::vector<int>& a, const std::vector<int>& b) {
+    return a[2] < b[2];
+}//Edges_Bool
+//Compara el peso de las esquinas, regresa true si el peso de a es menor que el de b
+//Estas referencias (&) evitan que se realicen copias completas de 
+//los vectores a comparar, lo que ahorra memoria y 
+//mejora el rendimiento al pasar argumentos a la función.
 
+std::vector<std::vector<int> > esquinas(const std::vector<std::vector<int> >& matrix) {
+    std::vector<std::vector<int> > edges; //vector con las esquinas 
+    int n = matrix.size();
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            if (matrix[i][j] != 0) {
+                std::vector<int> edge;
+                edge.push_back(i);
+                edge.push_back(j);
+                edge.push_back(matrix[i][j]);
+                edges.push_back(edge);
+
+            }
+        }
+    }
+
+    return edges;
+}
+int find(int x, std::vector<int>& representante) {
+    if (x != representante[x])
+        representante[x] = find(representante[x], representante);
+    return representante[x];
+}//find
+//Find se basa en el DSU para poder encontrar si dos nodos están conectados es decir si cuentan con el mismo representante
+
+
+
+void unite(int x, int y, std::vector<int>& representante) {
+    x = find(x, representante);
+    y = find(y, representante);
+    if (x == y) return;
+
+    representante[y] = x;
+}//unite 
+//Unite usa a find para encontrar si dos nodos están conectados
+//Kruskal's algorithm
+std::vector<std::vector<int> > KA(std::vector<std::vector<int> >& edges, int n) {//se crea la función de kruskal
+    std::vector<std::vector<int> > MST;//se crea el vector para el minimun spanning tree
+    std::vector<int> representante(n);//se crea el vector representante con tamaño n, siendo n el número de nodos
+
+    for (int i = 0; i < n; ++i)
+        representante[i] = i;
+    //Se crea y se llena el vector representante con los valores de cada nodo
+    std::sort(edges.begin(), edges.end(), Edges_Bool);
+    //se hace un sort para ordenar edges de acuerdo a su peso.
+    for (std::vector<int>& edge : edges) {
+        int u = edge[0], v = edge[1];
+        if (find(u, representante) != find(v, representante)) {
+            unite(u, v, representante);
+            MST.push_back(edge);
+        }
+    }
+    return MST;
+}
 
 
 
@@ -68,6 +136,7 @@ int costo_posible(std::vector<std::vector<int> > matrix) {
 
     return costo;
 }
+
 
 //Viajero
 
@@ -138,8 +207,8 @@ int main() {
     std::string file_name = "Matrix2.txt";
     std::vector<std::vector<int> > matrix;
     std::vector<std::string> Mapa;
-
-    matrix = read_file(file_name, Mapa);
+    int n;
+    matrix = read_file(file_name, Mapa,n);
 
      //Print the matrix
     std::cout << "Matrix:" << std::endl;
@@ -149,6 +218,8 @@ int main() {
          }
          std::cout << std::endl;
      }
+     //Print number of nodes
+        std::cout << "Number of nodes: " << n << std::endl;
 
     // Print the city names
     //std::cout << "City Names:" << std::endl;
@@ -158,9 +229,19 @@ int main() {
 
 
     //LLAMA A KRUSKAL -------------------------------------------
-
-
-
+    std::vector<std::vector<int> > edges = esquinas(matrix);
+     int w=0;
+    //printf("Edges:\n");
+    //for (const std::vector<int>& edge : edges) {
+        //printf("%d - %d : %d\n", edge[0], edge[1], edge[2]);
+    //}
+    std::cout<<"Caminos a tomar Kruskal: "<<std::endl;
+    std::vector<std::vector<int> > MST = KA(edges, n);//se crea el vector MST y se le asigna el valor de la función KA
+    for (std::vector<int>& edge : MST) {
+        std::cout << Mapa[edge[0] ]<< " - " << Mapa[edge[1]] << " : " << edge[2] << std::endl;
+        w+=edge[2];
+    }
+    std::cout<<"El peso total del MST es: "<<w<<std::endl;
     //LLAMA AL VIAJERO -------------------------------------------
     std::cout<<"El costo posible es: "<< costo_posible(matrix)<< std::endl;
     std::cout << Viajero(matrix, Mapa) << std::endl;
