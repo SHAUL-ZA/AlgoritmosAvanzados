@@ -9,7 +9,7 @@
 #include <sstream>
 #include <climits>
 #include <algorithm>
-
+#include <cmath>
 
 
 
@@ -198,7 +198,9 @@ int Viajero(std::vector<std::vector<int> > matrix, std::vector<std::string> Mapa
     return totalCost;
 }
 //PARTE 3 EUCLIDEANAS --------------------------------------------------
-
+double distanciaEuclidiana(double x1, double y1, double x2, double y2) {
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
 
 
 int main() {
@@ -247,6 +249,72 @@ int main() {
     std::cout << Viajero(matrix, Mapa) << std::endl;
 
     // LLAMA A LAS ECULIDEANAS -------------------------------------
+    std::ifstream archivo("Coordenadas.txt");  // Abre el archivo de texto.
+
+    if (!archivo.is_open()) {
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+        return 1;  // Salida con error.
+    }
+
+    std::string linea;
+    std::vector<std::pair<double, double>> puntos;  // Vector para almacenar los puntos.
+
+    // Lee cada línea del archivo y almacena los puntos.
+    while (std::getline(archivo, linea)) {
+        std::stringstream ss(linea);
+        std::string valor;
+        double x, y;
+
+        // Lee los valores separados por coma y los convierte a double.
+        std::getline(ss, valor, ',');
+        x = std::stod(valor);
+
+        std::getline(ss, valor, ',');
+        y = std::stod(valor);
+
+        // Almacena el punto en el vector.
+        puntos.push_back(std::make_pair(x, y));
+    }
+
+    archivo.close();  // Cierra el archivo después de leer.
+
+    // Calcula la distancia euclidiana entre todos los pares de puntos, también señala la distancia más corta y entre qué puntos se encuentra.
+    double distanciaMasCorta = std::numeric_limits<double>::max();
+    std::pair<double, double> punto1, punto2;
+    char letra = 'A';  // Inicializa la letra para el primer punto.
+
+    for (const auto& punto : puntos) { // Imprime los puntos.
+        std::cout << "Punto " << letra << ": (" << punto.first << ", " << punto.second << ")" << std::endl;
+        letra++;
+    }
+
+    // Calcula la distancia entre todos los pares de puntos.
+    for (int i = 0; i < puntos.size(); i++) { 
+        for (int j = i + 1; j < puntos.size(); j++) {
+            double distancia = distanciaEuclidiana(puntos[i].first, puntos[i].second, puntos[j].first, puntos[j].second);
+
+            // Imprime la distancia entre los puntos y las letras correspondientes.
+            std::cout << "Distancia entre " << char('A' + i) << " y " << char('A' + j) << ": " << distancia << std::endl;
+
+            if (distancia < distanciaMasCorta) {
+                distanciaMasCorta = distancia;
+                punto1 = puntos[i];
+                punto2 = puntos[j];
+            }
+        }
+    }
+
+    // Busca los índices de los puntos en el vector para obtener las letras correspondientes.
+    auto it1 = std::find(puntos.begin(), puntos.end(), punto1);
+    auto it2 = std::find(puntos.begin(), puntos.end(), punto2);
+
+    // Imprime la distancia más corta y los puntos entre los que se encuentra con las letras correspondientes.
+    std::cout << "La distancia mas corta es: " << distanciaMasCorta << " entre los puntos ("
+              << char('A' + std::distance(puntos.begin(), it1)) << ": ("
+              << punto1.first << ", " << punto1.second << ") y (" 
+              << char('A' + std::distance(puntos.begin(), it2)) << ": ("
+              << punto2.first << ", " << punto2.second << ")." << std::endl;
+
 
     return 0;
 }
